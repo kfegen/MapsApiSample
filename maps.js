@@ -3,9 +3,9 @@ var zip = '33401';
 var map;
 var google;
 var locations = [
-	["1", "", "27.340055", "-80.354004", ""],
-	["2", "", "28.195506", "-81.760254", ""],
-	["3", "", "25.767740", "-80.354004", ""],
+	["1", "", "27.340055", "-80.354004", "Location 1"],
+	["2", "", "28.195506", "-81.760254", "Location 2"],
+	["3", "", "25.767740", "-80.354004", "Location 3"],
 ];
 var markersArray = [];
 
@@ -87,7 +87,8 @@ function searchZip(){
 			var lng = results[0].geometry.location.lng();
 			var R = 6371; // radius of earth in km
 			var distances = [];
-			var closest = -1;
+			var closestLocation = -1;
+			var orderedLocations = [];
 			for (i = 0; i < locations.length; i++) {
 				var mlat = locations[i][2];
 				var mlng = locations[i][3];
@@ -98,13 +99,25 @@ function searchZip(){
 				var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 				var d = R * c;
 				distances[i] = d;
-				if (closest == -1 || d < distances[closest]) {
-					closest = i;
+				if (closestLocation == -1 || d < distances[closestLocation]) {
+					closestLocation = i;
 				}
+				
+				//This is incorrect and needs to be updated. 
+				orderedLocations.push(i);
 			}
-			if (closest > -1) {
-				var latLng = new google.maps.LatLng(locations[closest][2], locations[closest][3]);
+			if (closestLocation > -1) {
+				var latLng = new google.maps.LatLng(locations[closestLocation][2], locations[closestLocation][3]);
 				map.panTo(latLng);
+			}
+			
+			var locationsList = document.getElementById("locations");
+			locationsList.InnerHTML = '';
+			
+			for(var i=0; i < orderedLocations.length; i++){
+				var li = document.createElement('li');
+				li.innerHTML = locations[i][4];
+				locationsList.appendChild(li);
 			}
 		}
 
