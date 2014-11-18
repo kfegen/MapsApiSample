@@ -88,7 +88,7 @@ function searchZip(){
 			var R = 6371; // radius of earth in km
 			var distances = [];
 			var closestLocation = -1;
-			var orderedLocations = [];
+			var locationDistances = [];
 			for (i = 0; i < locations.length; i++) {
 				var mlat = locations[i][2];
 				var mlng = locations[i][3];
@@ -104,7 +104,7 @@ function searchZip(){
 				}
 				
 				//This is incorrect and needs to be updated. 
-				orderedLocations.push(i);
+				locationDistances.push({location:locations[i], distance:d});
 			}
 			if (closestLocation > -1) {
 				var latLng = new google.maps.LatLng(locations[closestLocation][2], locations[closestLocation][3]);
@@ -112,11 +112,21 @@ function searchZip(){
 			}
 			
 			var locationsList = document.getElementById("locations");
-			locationsList.InnerHTML = '';
+			locationsList.innerHTML = '';
+			
+			var orderedLocations = locationDistances.sort(function(a, b){
+				if(a.distance < b.distance){
+					return -1
+				}
+				if(a.distance > b.distance){
+					return 1;
+				}
+				return 0;
+			});
 			
 			for(var i=0; i < orderedLocations.length; i++){
 				var li = document.createElement('li');
-				li.innerHTML = locations[i][4];
+				li.innerHTML = orderedLocations[i].location[4] + ' distance: ' + orderedLocations[i].distance;
 				locationsList.appendChild(li);
 			}
 		}
