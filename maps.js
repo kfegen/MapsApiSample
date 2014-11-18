@@ -79,7 +79,6 @@ function searchZip(){
 							infowindow.open(map, this);
 						}
 					}(locations[i][4]));
-
 				}
 			}
 
